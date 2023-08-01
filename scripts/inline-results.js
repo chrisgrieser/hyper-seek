@@ -159,6 +159,22 @@ function run(argv) {
 	let mode = $.NSProcessInfo.processInfo.environment.objectForKey("mode").js || "default";
 	const query = argv[0].trim();
 
+	// ensure cache folder exists. checks only done on short queries to not run
+	// the costly check on the later runs.
+	if (query.length < 2) {
+		const finder = Application("Finder");
+		const cacheDir = $.getenv("alfred_workflow_cache");
+		if (!finder.exists(cacheDir)) {
+			const cacheDirBasename = $.getenv("alfred_workflow_bundleid");
+			const cacheDirParent = cacheDir.slice(0, -cacheDirBasename.length);
+			finder.make({
+				new: "folder",
+				at: Path(cacheDirParent),
+				withProperties: { name: cacheDirBasename },
+			});
+		}
+	}
+
 	// GUARD CLAUSE 1:
 	// - query < 3 chars
 	// - query == URL
