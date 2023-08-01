@@ -3,7 +3,7 @@
 
 [Alfred workflow](https://www.alfredapp.com/) that shows inline search results, without a keyword.
 
-<img src="./assets/showcase.png" alt="showcase" width="50%">
+![Showcase image](https://github.com/chrisgrieser/hyper-seek/assets/73286100/f463389a-7eda-4ecd-9d4e-00b140408523)
 
 ## Features
 - Inline Search Results *without* a keyword. Results are always shown alongside your other keywords.
