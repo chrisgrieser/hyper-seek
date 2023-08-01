@@ -3,11 +3,12 @@
 
 [Alfred workflow](https://www.alfredapp.com/) that shows inline search results, without a keyword.
 
-![Showcase image](https://github.com/chrisgrieser/hyper-seek/assets/73286100/f463389a-7eda-4ecd-9d4e-00b140408523)
+<img src="https://github.com/chrisgrieser/hyper-seek/assets/73286100/f463389a-7eda-4ecd-9d4e-00b140408523" alt="Showcase image" width=70%>
 
 ## Features
-- Inline Search Results *without* a keyword. Results are always shown alongside your other keywords.
-- Multi-Selection of URLs.
+- Inline Search Results, similar to Spotlight on iOS.
+- Results *without* a keyword. Results are always shown alongside your other keywords.
+- Multi-Selection of URLs to open.
 - Global Search Hotkey: Search for terms, open URLs, write mails, etc.
 - Add link to selected text: Turns selected text into a Markdown link. 
 
