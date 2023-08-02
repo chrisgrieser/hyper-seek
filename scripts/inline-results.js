@@ -181,10 +181,8 @@ function run(argv) {
 		});
 	}
 
-	// GUARD CLAUSE 1:
-	// - query < 3 chars
-	// - query == URL
-	if (query.length < 3 || query.match(/^\w+:/)) return;
+	// GUARD CLAUSE 1: query is URL
+	if (query.match(/^\w+:/)) return;
 
 	// GUARD CLAUSE 2: first word of query is Alfred keyword
 	// (guard clause is ignored when doing fallback search or multi-select,
