@@ -13,6 +13,9 @@ if (resultsToFetch < 1) resultsToFetch = 1;
 else if (resultsToFetch > 25) resultsToFetch = 25; // maximum supported by `ddgr`
 const ignoreAlfredKeywordsEnabled = $.getenv("ignore_alfred_keywords") === "1";
 
+// https://duckduckgo.com/duckduckgo-help-pages/settings/params/
+const searchRegion = $.getenv("region") === "none" ? "" : "--reg=" + $.getenv("region");
+
 const multiSelectIcon = "🔳";
 
 //──────────────────────────────────────────────────────────────────────────────
@@ -232,7 +235,7 @@ function run(argv) {
 		// (less than 40ms difference between 1 and 25 results), so there is no use
 		// in restricting the number of results for performance. (Except for 25 being
 		// ddgr's maximum)
-		const ddgrCommand = `ddgr --noua ${includeUnsafe} --num=${resultsToFetch} --json "${query}"`;
+		const ddgrCommand = `ddgr --noua ${includeUnsafe} --num=${resultsToFetch} ${searchRegion} --json "${query}"`;
 		const response = {
 			results: JSON.parse(app.doShellScript(ddgrCommand)),
 			query: query,

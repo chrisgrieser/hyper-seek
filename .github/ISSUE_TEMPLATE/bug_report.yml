@@ -29,7 +29,7 @@ body:
     id: debugging-log
     attributes:
       label: Debugging Log
-      description: "You can get a debugging log by opening the workflow in Alfred preferences and pressing `⌘ + D`. A small window will open up which will log everything happening during the execution of the Workflow. Use the malfunctioning part of the workflow once more, copy the content of the log window, and paste it here. If the debugging log is long, please attach it as file instead of pasting everything in here."
+      description: "You can get a debugging log by opening the workflow in Alfred preferences and pressing `⌘ + D`. A small window will open up which will log everything happening during the execution of the workflow. Select Change the 'All Information' dropdown to 'Core Information'. Use the malfunctioning part of the workflow once more, copy the content of the log window, and paste it here."
       render: Text
     validations:
       required: true
