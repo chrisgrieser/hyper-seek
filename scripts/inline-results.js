@@ -123,17 +123,19 @@ function refreshKeywordCache(cachePath) {
 			acc.push(...relevantKeywords);
 			return acc;
 		}, []);
+
 	// CASE 5: Pre-installed Searches
-	app
-		.doShellScript(
-			"grep --files-without-match 'disabled' ../../preferences/features/websearch/**/prefs.plist | " +
-				"xargs -I {} grep -A1 '<key>keyword' '{}' | grep '<string>' || true",
-		)
-		.split("\r")
-		.forEach((line) => {
+	const preinstalledSearches = app.doShellScript(
+		"grep --files-without-match 'disabled' ../../preferences/features/websearch/**/prefs.plist | " +
+			"xargs -I {} grep -A1 '<key>keyword' '{}' | grep '<string>' || true",
+	);
+	if (preinstalledSearches) {
+		preinstalledSearches.split("\r").forEach((line) => {
 			const searchKeyword = line.split(">")[1].split("<")[0];
 			keywords.push(searchKeyword);
 		});
+	}
+
 	// CASE 6: User Searches
 	const userSearches = JSON.parse(
 		app.doShellScript("plutil -convert json ../../preferences/features/websearch/prefs.plist -o - || true"),
