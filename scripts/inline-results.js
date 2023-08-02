@@ -129,6 +129,7 @@ function refreshKeywordCache(cachePath) {
 		"grep --files-without-match 'disabled' ../../preferences/features/websearch/**/prefs.plist | " +
 			"xargs -I {} grep -A1 '<key>keyword' '{}' | grep '<string>' || true",
 	);
+	// check for the possibility of user having all searches disabled
 	if (preinstalledSearches) {
 		preinstalledSearches.split("\r").forEach((line) => {
 			const searchKeyword = line.split(">")[1].split("<")[0];
@@ -138,12 +139,15 @@ function refreshKeywordCache(cachePath) {
 
 	// CASE 6: User Searches
 	const userSearches = JSON.parse(
-		app.doShellScript("plutil -convert json ../../preferences/features/websearch/prefs.plist -o - || true"),
+		app.doShellScript("plutil -convert json ../../preferences/features/websearch/prefs.plist -o - || true") ||
+			"{}",
 	).customSites;
-	Object.keys(userSearches).forEach((uuid) => {
-		const searchObj = userSearches[uuid];
-		if (searchObj.enabled) keywords.push(searchObj.keyword);
-	});
+	if (userSearches) {
+		Object.keys(userSearches).forEach((uuid) => {
+			const searchObj = userSearches[uuid];
+			if (searchObj.enabled) keywords.push(searchObj.keyword);
+		});
+	}
 
 	const uniqueKeywords = [...new Set(keywords)];
 
