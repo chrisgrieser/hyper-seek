@@ -1,9 +1,22 @@
 # Hyper Seek
+
 ![](https://img.shields.io/github/downloads/chrisgrieser/hyper-seek/total?label=Total%20Downloads&style=plastic) ![](https://img.shields.io/github/v/release/chrisgrieser/hyper-seek?label=Latest%20Release&style=plastic) 
 
 [Alfred workflow](https://www.alfredapp.com/) that shows inline search results, without a keyword.
 
 <img src="https://github.com/chrisgrieser/hyper-seek/assets/73286100/f463389a-7eda-4ecd-9d4e-00b140408523" alt="Showcase image" width=70%>
+
+## Table of Contents
+<!--toc:start-->
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+    - [Inline results](#inline-results)
+    - [Global search hotkey](#global-search-hotkey)
+    - [Add link to selection](#add-link-to-selection)
+    - [Auto-Update](#auto-update)
+- [Credits](#credits)
+<!--toc:end-->
 
 ## Features
 - Inline Search Results, similar to Spotlight on iOS.
@@ -23,7 +36,7 @@
 
 ## Usage
 
-### Inline results (without a keyword!)
+### Inline results
 You do not need to use a keyword. Typing anything in Alfred shows inline search results.
 - <kbd>⏎</kbd>: Search for the query term, or open result.
 - <kbd>⌘</kbd><kbd>⏎</kbd>: Multi-Select: (de)select the URL. The next <kbd>⏎</kbd> opens the selected result as well as all URLs marked before. 
@@ -43,6 +56,9 @@ Configure the [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/
 
 ### Add link to selection 
 Configure another [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) to turn selected text into a Markdown link, with the URL of the first search result for that text as URL of the Markdown link. This feature is essentially a simplified version of [Brett Terpstra's SearchLink](https://brettterpstra.com/projects/searchlink/). 
+
+### Auto-Update
+Due to the nature of this workflow, it is not going to be submitted to the Alfred Gallery. Therefore, the workflow includes its own auto-update function, which checks every day for a new update.
 
 ## Credits
 <!-- vale Google.FirstPerson = NO -->
