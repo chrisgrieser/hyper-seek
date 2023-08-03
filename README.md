@@ -21,22 +21,19 @@
 
 2. [➡️ Download the latest release of the workflow.](https://github.com/chrisgrieser/hyper-seek/releases/latest)
 
-When admitted to the Alfred Gallery, the workflow auto-updates via Alfred's workflow-update mechanism.
-
 ## Usage
 
-## Inline results (without a keyword!)
+### Inline results (without a keyword!)
 You do not need to use a keyword. Typing anything in Alfred shows inline search results.
 - <kbd>⏎</kbd>: Search for the query term, or open result.
 - <kbd>⌘</kbd><kbd>⏎</kbd>: Multi-Select: (de)select the URL. The next <kbd>⏎</kbd> opens the selected result as well as all URLs marked before. 
 - <kbd>⌥</kbd><kbd>⏎</kbd>: Copy the URL. 
 - <kbd>⇧</kbd> (hold): Show preview text of search result. 
 
-**Recommendations**
-- Add this workflow as [fallback search](https://www.alfredapp.com/help/features/default-results/fallback-searches/). 
-- In the [Alfred Advanced Settings](https://www.alfredapp.com/help/advanced/), set <kbd>⌃</kbd><kbd>⏎</kbd> to `Action all visible results`. This allows you to open all search results at once. 
+> **Recommendations**  
+> Add this workflow as [fallback search](https://www.alfredapp.com/help/features/default-results/fallback-searches/). In the [Alfred Advanced Settings](https://www.alfredapp.com/help/advanced/), set <kbd>⌃</kbd><kbd>⏎</kbd> to `Action all visible results`. This allows you to open all search results at once. 
 
-## Global search hotkey 
+### Global search hotkey 
 Configure the [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) to be able to search for any selection. The resulting action depends on the type of text selected:
 - file path → reveal file in Finder 
 - directory path → open directory in Finder 
@@ -44,7 +41,7 @@ Configure the [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/
 - eMail → send eMail to that address in your default mail app 
 - Some other text → search for selection & open first search result (`I'm feeling lucky`) 
 
-## Add link to selection 
+### Add link to selection 
 Configure another [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) to turn selected text into a Markdown link, with the URL of the first search result for that text as URL of the Markdown link. This feature is essentially a simplified version of [Brett Terpstra's SearchLink](https://brettterpstra.com/projects/searchlink/). 
 
 ## Credits
