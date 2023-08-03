@@ -194,9 +194,11 @@ function run(argv) {
 	/** @type{"fallback"|"multi-select"|"default"|"rerun"} */
 	let mode = $.NSProcessInfo.processInfo.environment.objectForKey("mode").js || "default";
 
+	// HACK script filter is triggered with any letter of the roman alphabet, and
+	// then prepended here, to trigger this workflow with any search term
 	const scriptFilterKeyword =
 		$.NSProcessInfo.processInfo.environment.objectForKey("alfred_workflow_keyword").js || "";
-	const query = scriptFilterKeyword + argv[0].trim();
+	const query = (scriptFilterKeyword + argv[0]).trim();
 
 	// ensure cache folder exists
 	const finder = Application("Finder");
