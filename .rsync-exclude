@@ -9,3 +9,4 @@ README.md
 Makefile
 build-and-release.sh
 LICENSE
+dependencies/ddgr.py
