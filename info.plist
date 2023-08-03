@@ -115,16 +115,6 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>23B4E13F-A2E8-4FBE-83B8-4C4E4288C8B1</string>
-				<key>modifiers</key>
-				<integer>524288</integer>
-				<key>modifiersubtext</key>
-				<string>⌥: Copy URL</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
 				<string>D3C22147-3316-415A-B4C1-8AA201F0888E</string>
 				<key>modifiers</key>
 				<integer>0</integer>
@@ -142,6 +132,16 @@
 				<string>⌘: Select URL</string>
 				<key>vitoclose</key>
 				<true/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>23B4E13F-A2E8-4FBE-83B8-4C4E4288C8B1</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>⌥: Copy URL</string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>B9CE3F5C-A396-4E8C-8709-A08871B57DE6</key>
@@ -184,7 +184,18 @@
 			</dict>
 		</array>
 		<key>D3C22147-3316-415A-B4C1-8AA201F0888E</key>
-		<array/>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>841BD8BB-2E10-4E6A-89DC-2C5DAA070D75</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>FF680CD3-F6C1-4A64-B782-6C898AE55BB9</key>
 		<array>
 			<dict>
@@ -438,46 +449,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
-				<true/>
-				<key>removeextension</key>
-				<false/>
-				<key>text</key>
-				<string>{query}</string>
-				<key>title</key>
-				<string>📋 Copied</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
-			<key>uid</key>
-			<string>F6591673-575D-4105-B38F-59AD1457EF23</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>autopaste</key>
-				<false/>
-				<key>clipboardtext</key>
-				<string>{query}</string>
-				<key>ignoredynamicplaceholders</key>
-				<false/>
-				<key>transient</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.clipboard</string>
-			<key>uid</key>
-			<string>23B4E13F-A2E8-4FBE-83B8-4C4E4288C8B1</string>
-			<key>version</key>
-			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
@@ -495,6 +466,103 @@
 			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
 			<string>D3C22147-3316-415A-B4C1-8AA201F0888E</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string># THESE VARIABLES MUST BE SET. SEE THE ONEUPDATER README FOR AN EXPLANATION OF EACH.
+readonly remote_info_plist='https://raw.githubusercontent.com/chrisgrieser/hyper-seek/main/info.plist'
+readonly workflow_url='https://github.com/chrisgrieser/hyper-seek/releases/latest/download/hyper-seek.alfredworkflow'
+readonly download_type='direct'
+readonly frequency_check='1'
+
+# FROM HERE ON, CODE SHOULD BE LEFT UNTOUCHED!
+function abort {
+  echo "${1}" &gt;&amp;2
+  exit 1
+}
+
+function url_exists {
+  curl --silent --location --output /dev/null --fail --range 0-0 "${1}"
+}
+
+function notification {
+  local -r notificator="$(find . -type f -name 'notificator')"
+
+  if [[ -f "${notificator}" &amp;&amp; "$(/usr/bin/file --brief --mime-type "${notificator}")" == 'text/x-shellscript' ]]; then
+    "${notificator}" --message "${1}" --title "${alfred_workflow_name}" --subtitle 'A new version is available'
+    return
+  fi
+
+  osascript -e "display notification \"${1}\" with title \"${alfred_workflow_name}\" subtitle \"A new version is available\""
+}
+
+# Local sanity checks
+readonly local_info_plist='info.plist'
+readonly local_version="$(/usr/libexec/PlistBuddy -c 'print version' "${local_info_plist}")"
+
+[[ -n "${local_version}" ]] || abort 'You need to set a workflow version in the configuration sheet.'
+[[ "${download_type}" =~ ^(direct|page|github_release)$ ]] || abort "'download_type' (${download_type}) needs to be one of 'direct', 'page', or 'github_release'."
+[[ "${frequency_check}" =~ ^[0-9]+$ ]] || abort "'frequency_check' (${frequency_check}) needs to be a number."
+
+# Check for updates
+if [[ $(find "${local_info_plist}" -mtime +"${frequency_check}"d) ]]; then
+  # Remote sanity check
+  if ! url_exists "${remote_info_plist}"; then
+    abort "'remote_info_plist' (${remote_info_plist}) appears to not be reachable."
+  fi
+
+  readonly tmp_file="$(mktemp)"
+  curl --silent --location --output "${tmp_file}" "${remote_info_plist}"
+  readonly remote_version="$(/usr/libexec/PlistBuddy -c 'print version' "${tmp_file}")"
+  rm "${tmp_file}"
+
+  if [[ "${local_version}" == "${remote_version}" ]]; then
+    touch "${local_info_plist}" # Reset timer by touching local file
+    exit 0
+  fi
+
+  if [[ "${download_type}" == 'page' ]]; then
+    notification 'Opening download page…'
+    open "${workflow_url}"
+    exit 0
+  fi
+
+  readonly download_url="$(
+    if [[ "${download_type}" == 'github_release' ]]; then
+      osascript -l JavaScript -e 'function run(argv) { return JSON.parse(argv[0])["assets"].find(asset =&gt; asset["browser_download_url"].endsWith(".alfredworkflow"))["browser_download_url"] }' "$(curl --silent "https://api.github.com/repos/${workflow_url}/releases/latest")"
+    else
+      echo "${workflow_url}"
+    fi
+  )"
+
+  if url_exists "${download_url}"; then
+    notification 'Downloading and installing…'
+    readonly download_name="$(basename "${download_url}")"
+    curl --silent --location --output "${HOME}/Downloads/${download_name}" "${download_url}"
+    open "${HOME}/Downloads/${download_name}"
+  else
+    abort "'workflow_url' (${download_url}) appears to not be reachable."
+  fi
+fi</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>841BD8BB-2E10-4E6A-89DC-2C5DAA070D75</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -581,6 +649,40 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>count</key>
+				<integer>1</integer>
+				<key>keychar</key>
+				<string>↓</string>
+				<key>keycode</key>
+				<integer>125</integer>
+				<key>keymod</key>
+				<integer>10485760</integer>
+				<key>overridewithargument</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.dispatchkeycombo</string>
+			<key>uid</key>
+			<string>29480781-3450-43E9-A61B-AB3222D73835</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>seconds</key>
+				<string>.2</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.delay</string>
+			<key>uid</key>
+			<string>B9CE3F5C-A396-4E8C-8709-A08871B57DE6</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>subtext</key>
 				<string>{query}</string>
 				<key>text</key>
@@ -616,48 +718,47 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>count</key>
-				<integer>1</integer>
-				<key>keychar</key>
-				<string>↓</string>
-				<key>keycode</key>
-				<integer>125</integer>
-				<key>keymod</key>
-				<integer>10485760</integer>
-				<key>overridewithargument</key>
+				<key>lastpathcomponent</key>
 				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>📋 Copied</string>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.output.dispatchkeycombo</string>
+			<string>alfred.workflow.output.notification</string>
 			<key>uid</key>
-			<string>29480781-3450-43E9-A61B-AB3222D73835</string>
+			<string>F6591673-575D-4105-B38F-59AD1457EF23</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>seconds</key>
-				<string>.2</string>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.utility.delay</string>
+			<string>alfred.workflow.output.clipboard</string>
 			<key>uid</key>
-			<string>B9CE3F5C-A396-4E8C-8709-A08871B57DE6</string>
+			<string>23B4E13F-A2E8-4FBE-83B8-4C4E4288C8B1</string>
 			<key>version</key>
-			<integer>1</integer>
+			<integer>3</integer>
 		</dict>
 	</array>
 	<key>readme</key>
 	<string># Hyper Seek
 Search for the Power User. Inline Results, *without a keyword*. Multi-select results to open. 
-
----
-
-## ℹ️ Requirements
-[ddgr](https://github.com/jarun/ddgr) is required. You can install it via: `brew install ddgr`
-
----
 
 ## Inline results (without a keyword!)
 - &lt;kbd&gt;⏎&lt;/kbd&gt;: Search for the query term, or open result.
@@ -680,6 +781,9 @@ Selection is…
 ## Add link to selection 
 Turns selected text into a markdown link, with the URL of the first search result for that text as URL for the markdown link. This feature is essentially a simplified version of [Brett Terpstra's SearchLink](https://brettterpstra.com/projects/searchlink/). 
 
+## Auto-Update
+Due to the nature of this workflow, it will not be submitted to the Alfred Gallery. Therefore, the workflow includes it's own auto-update function, which checks every day for a new update.
+
 ---
 
 Created by [Chris Grieser](https://chris-grieser.de/).</string>
@@ -692,18 +796,18 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<key>note</key>
 			<string>save URL for multi-select</string>
 			<key>xpos</key>
-			<real>500</real>
+			<real>560</real>
 			<key>ypos</key>
-			<real>595</real>
+			<real>465</real>
 		</dict>
 		<key>23B4E13F-A2E8-4FBE-83B8-4C4E4288C8B1</key>
 		<dict>
 			<key>colorindex</key>
-			<integer>10</integer>
+			<integer>2</integer>
 			<key>xpos</key>
-			<real>495</real>
+			<real>420</real>
 			<key>ypos</key>
-			<real>325</real>
+			<real>750</real>
 		</dict>
 		<key>25810527-3725-4BAA-91DA-7B4E6FCCCBB7</key>
 		<dict>
@@ -723,9 +827,9 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<key>note</key>
 			<string>select next result</string>
 			<key>xpos</key>
-			<real>500</real>
+			<real>560</real>
 			<key>ypos</key>
-			<real>740</real>
+			<real>610</real>
 		</dict>
 		<key>37823B3A-8211-49F5-BC98-118E47141CB4</key>
 		<dict>
@@ -777,27 +881,40 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<key>colorindex</key>
 			<integer>5</integer>
 			<key>xpos</key>
-			<real>365</real>
+			<real>420</real>
 			<key>ypos</key>
-			<real>685</real>
+			<real>555</real>
 		</dict>
 		<key>6EDDEC35-4391-49A3-A93F-99B48265C880</key>
 		<dict>
+			<key>colorindex</key>
+			<integer>10</integer>
 			<key>note</key>
 			<string>triggers on every letter of the roman alphabet</string>
 			<key>xpos</key>
-			<real>165</real>
+			<real>210</real>
 			<key>ypos</key>
-			<real>450</real>
+			<real>455</real>
+		</dict>
+		<key>841BD8BB-2E10-4E6A-89DC-2C5DAA070D75</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>7</integer>
+			<key>note</key>
+			<string>OneUpdater</string>
+			<key>xpos</key>
+			<real>810</real>
+			<key>ypos</key>
+			<real>320</real>
 		</dict>
 		<key>B9CE3F5C-A396-4E8C-8709-A08871B57DE6</key>
 		<dict>
 			<key>colorindex</key>
 			<integer>5</integer>
 			<key>xpos</key>
-			<real>435</real>
+			<real>500</real>
 			<key>ypos</key>
-			<real>770</real>
+			<real>640</real>
 		</dict>
 		<key>BAD2BCE8-96CD-4FF0-9445-860265918045</key>
 		<dict>
@@ -828,27 +945,27 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<key>xpos</key>
 			<real>30</real>
 			<key>ypos</key>
-			<real>700</real>
+			<real>660</real>
 		</dict>
 		<key>D3C22147-3316-415A-B4C1-8AA201F0888E</key>
 		<dict>
 			<key>colorindex</key>
-			<integer>7</integer>
+			<integer>10</integer>
 			<key>note</key>
 			<string>open URL(s) &amp; log queries</string>
 			<key>xpos</key>
-			<real>500</real>
+			<real>560</real>
 			<key>ypos</key>
-			<real>450</real>
+			<real>320</real>
 		</dict>
 		<key>F6591673-575D-4105-B38F-59AD1457EF23</key>
 		<dict>
 			<key>colorindex</key>
-			<integer>10</integer>
+			<integer>2</integer>
 			<key>xpos</key>
-			<real>635</real>
+			<real>560</real>
 			<key>ypos</key>
-			<real>325</real>
+			<real>750</real>
 		</dict>
 		<key>FB5D42B1-CF89-4DD7-B57A-1995FE9A1BF9</key>
 		<dict>
@@ -870,7 +987,7 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<key>xpos</key>
 			<real>190</real>
 			<key>ypos</key>
-			<real>730</real>
+			<real>690</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
@@ -917,12 +1034,12 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 				<key>required</key>
 				<false/>
 				<key>text</key>
-				<string></string>
+				<string>Ignore</string>
 			</dict>
 			<key>description</key>
 			<string>When a keyword from another workflow is shown, this workflow will not be triggered (recommended).</string>
 			<key>label</key>
-			<string>Ignore Alfred Keywords</string>
+			<string>Alfred Keywords</string>
 			<key>type</key>
 			<string>checkbox</string>
 			<key>variable</key>
@@ -957,12 +1074,12 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 				<key>required</key>
 				<false/>
 				<key>text</key>
-				<string></string>
+				<string>Disable</string>
 			</dict>
 			<key>description</key>
 			<string>for Inline Results</string>
 			<key>label</key>
-			<string>Disable Safe Search</string>
+			<string>Safe Search</string>
 			<key>type</key>
 			<string>checkbox</string>
 			<key>variable</key>

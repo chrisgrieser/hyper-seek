@@ -9,3 +9,6 @@ transfer-local-files:
 
 release:
 	zsh ./build-and-release.sh
+
+ddgr: # update ddgr-dependency
+	curl -sL "https://raw.githubusercontent.com/kometenstaub/ddgr/main/ddgr" -o ./dependencies/ddgr.py
