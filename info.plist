@@ -772,7 +772,7 @@ fi</string>
 				<key>subtext</key>
 				<string>{query}</string>
 				<key>text</key>
-				<string>{const:alfred_workflow_name}: Search for Inline Results</string>
+				<string>Trigger Search for Inline Results</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.trigger.fallback</string>
