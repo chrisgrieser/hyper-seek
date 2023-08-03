@@ -14,7 +14,6 @@
     - [Inline results](#inline-results)
     - [Global search hotkey](#global-search-hotkey)
     - [Add link to selection](#add-link-to-selection)
-    - [Auto-Update](#auto-update)
 - [Credits](#credits)
 <!--toc:end-->
 
@@ -26,13 +25,13 @@
 - Add link to selected text: Turns selected text into a Markdown link. 
 
 ## Installation
-1. Install [ddgr](https://github.com/jarun/ddgr): 
+[➡️ Download the latest release of the workflow.](https://github.com/chrisgrieser/hyper-seek/releases/latest)
+> __Note__  
+> An earlier version of this workflow required `ddgr`. However, `ddgr` is not required anymore in the current version.
 
-    ```bash
-    brew install ddgr
-    ```
 
-2. [➡️ Download the latest release of the workflow.](https://github.com/chrisgrieser/hyper-seek/releases/latest)
+__Auto-Update__  
+Due to the nature of this workflow, it is not going to be submitted to the Alfred Gallery. Therefore, the workflow includes its own auto-update function, which checks every day for a new update.
 
 ## Usage
 
@@ -43,7 +42,7 @@ You do not need to use a keyword. Typing anything in Alfred shows inline search 
 - <kbd>⌥</kbd><kbd>⏎</kbd>: Copy the URL. 
 - <kbd>⇧</kbd> (hold): Show preview text of search result. 
 
-> **Recommendations**  
+> __Recommendations__  
 > Add this workflow as [fallback search](https://www.alfredapp.com/help/features/default-results/fallback-searches/). In the [Alfred Advanced Settings](https://www.alfredapp.com/help/advanced/), set <kbd>⌃</kbd><kbd>⏎</kbd> to `Action all visible results`. This allows you to open all search results at once. 
 
 ### Global search hotkey 
@@ -56,9 +55,6 @@ Configure the [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/
 
 ### Add link to selection 
 Configure another [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) to turn selected text into a Markdown link, with the URL of the first search result for that text as URL of the Markdown link. This feature is essentially a simplified version of [Brett Terpstra's SearchLink](https://brettterpstra.com/projects/searchlink/). 
-
-### Auto-Update
-Due to the nature of this workflow, it is not going to be submitted to the Alfred Gallery. Therefore, the workflow includes its own auto-update function, which checks every day for a new update.
 
 ## Credits
 <!-- vale Google.FirstPerson = NO -->
