@@ -57,7 +57,7 @@ Configure the [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/
 Configure another [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) to turn selected text into a Markdown link, with the URL of the first search result for that text as URL of the Markdown link. This feature is essentially a simplified version of [Brett Terpstra's SearchLink](https://brettterpstra.com/projects/searchlink/). 
 
 ## License
-- `ddgr` is included in this project licensed and is licensed under the [GNU GPL v3](https://github.com/kometenstaub/ddgr/blob/main/LICENSE).
+- `ddgr` is included in this project and licensed under [GNU GPL v3](https://github.com/kometenstaub/ddgr/blob/main/LICENSE).
 - `Hyper Seek` is licensed under the [MIT License](https://github.com/chrisgrieser/hyper-seek/blob/main/LICENSE).
 
 ## Credits
