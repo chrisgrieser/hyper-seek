@@ -129,15 +129,7 @@ function refreshKeywordCache(cachePath) {
 				keywords.push(value);
 			}
 
-			// - also only the first word of a keyword matters
-			// - only keywords with letter as first char are relevant
-			const relevantKeywords = keywords.reduce((acc, keyword) => {
-				const firstWord = keyword.split(" ")[0];
-				if (firstWord.match(/^[a-z]/)) acc.push(firstWord);
-				return acc;
-			}, []);
-
-			acc.push(...relevantKeywords);
+			acc.push(...keywords);
 			return acc;
 		}, []);
 
@@ -175,17 +167,24 @@ function refreshKeywordCache(cachePath) {
 	// .keywordEnabled is undefined true, hence need to check for !== false
 	if (mailPrefs.keywordEnabled !== false) keywords.push(mailPrefs.keyword);
 
-	// FINISH
-	const uniqueKeywords = [...new Set(keywords)];
+	// FILTER IRRELEVANT KEYWORDS
+	// - also only the first word of a keyword matters
+	// - only keywords with letter as first char are relevant
+	const relevantKeywords = keywords.reduce((acc, keyword) => {
+		const firstWord = keyword.split(" ")[0];
+		if (firstWord.match(/^[a-z]/)) acc.push(firstWord);
+		return acc;
+	}, []);
+	const uniqueKeywords = [...new Set(relevantKeywords)];
+	writeToFile(cachePath, JSON.stringify(uniqueKeywords));
 
+	// LOGGING
 	const durationTotalSecs = (+new Date() - timelogStart) / 1000;
 	console.log(`Rebuilt keyword cache (${uniqueKeywords.length} keywords) in ${durationTotalSecs}s`);
-	writeToFile(cachePath, JSON.stringify(uniqueKeywords));
 }
 
 //──────────────────────────────────────────────────────────────────────────────
 //──────────────────────────────────────────────────────────────────────────────
-
 
 /** @type {AlfredRun} */
 // rome-ignore lint/correctness/noUnusedVariables: Alfred run
