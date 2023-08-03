@@ -15,4 +15,5 @@ ddgr: # update ddgr-dependency
 	prefs_location=$$(grep "5" "$$HOME/Library/Application Support/Alfred/prefs.json" | cut -d'"' -f4 | sed -e 's|\\/|/|g' -e "s|^~|$$HOME|") && \
 	local_workflow="$$prefs_location/Alfred.alfredpreferences/workflows/$$workflow_id" && \
 	curl -L "https://raw.githubusercontent.com/kometenstaub/ddgr/main/ddgr" -o ./dependencies/ddgr.py && \
+	chmod +x ./dependencies/ddgr.py && \
 	cp -fv ./dependencies/ddgr.py "$$local_workflow/dependencies/ddgr.py"

@@ -276,7 +276,7 @@ function run(argv) {
 		// (less than 40ms difference between 1 and 25 results), so there is no use
 		// in restricting the number of results for performance. (Except for 25 being
 		// ddgr's maximum)
-		const ddgrCmd = `python3 ./dependencies/ddgr.py --json --noua ${includeUnsafe} --num=${resultsToFetch} ${searchRegion} --json "${query}"`;
+		const ddgrCmd = `python3 ./dependencies/ddgr.py --json --noua ${includeUnsafe} --num=${resultsToFetch} ${searchRegion} "${query}"`;
 		response = JSON.parse(app.doShellScript(ddgrCmd));
 		response.query = query;
 		writeToFile(responseCachePath, JSON.stringify(response));
