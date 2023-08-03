@@ -232,13 +232,16 @@ function run(argv) {
 	}
 
 	// GUARD CLAUSE 3: use old results
-	// get values from previous run
+	// -> get values from previous run
 	const oldQuery = $.NSProcessInfo.processInfo.environment.objectForKey("oldQuery").js;
 	const oldResults = $.NSProcessInfo.processInfo.environment.objectForKey("oldResults").js || "[]";
+
+	const querySearchUrl = $.getenv("search_site") + encodeURIComponent(query)
+	/** @type AlfredItem */
 	const searchForQuery = {
 		title: `"${query}"`,
 		uid: query,
-		arg: $.getenv("search_site") + encodeURIComponent(query),
+		arg: querySearchUrl,
 	};
 
 	// PERF & HACK If the user is typing, return early to guarantee the top entry
@@ -261,7 +264,6 @@ function run(argv) {
 	// PERF cache `ddgr` response so that re-opening Alfred or using multi-select
 	// does not re-fetch results
 	const responseCachePath = $.getenv("alfred_workflow_cache") + "/reponseCache.json";
-
 	/** @type{ddgrResponse} */
 	const responseCache = JSON.parse(readFile(responseCachePath) || "{}");
 	/** @type{ddgrResponse} */
@@ -292,6 +294,7 @@ function run(argv) {
 	const multiSelectUrls = readFile(multiSelectBufferPath).split("\n") || [];
 
 	// RESULTS
+	/** @type AlfredItem[] */
 	const newResults = response.results.map((item) => {
 		const isSelected = multiSelectUrls.includes(item.url);
 		const icon = isSelected ? multiSelectIcon + " " : "";
@@ -314,11 +317,11 @@ function run(argv) {
 	});
 
 	// MULTI-SLECT: searchForQuery
-	if (multiSelectUrls.includes(searchForQuery.arg)) {
+	if (multiSelectUrls.includes(querySearchUrl)) {
 		searchForQuery.title = multiSelectIcon + " " + searchForQuery.title;
 		searchForQuery.mods = {
 			cmd: {
-				arg: searchForQuery.arg, // has to be set, since main arg can be ""
+				arg: querySearchUrl, // has to be set again, since main arg can be ""
 				variables: { mode: "multi-select" },
 				subtitle: "⌘: Deselect URL",
 			},
@@ -340,7 +343,6 @@ function run(argv) {
 	const durationTotalSecs = (+new Date() - timelogStart) / 1000;
 	let log = `${durationTotalSecs}s, "${query}"`;
 	if (mode === "fallback" || mode === "multi-select") log += ` (${mode})`;
-
 	if (mode === "rerun") log = "__" + log; // indented to make it easier to read
 	else log = "Total: " + log;
 	console.log(log);
