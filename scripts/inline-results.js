@@ -21,16 +21,20 @@ app.includeStandardAdditions = true;
 //──────────────────────────────────────────────────────────────────────────────
 // CONFIG
 
-const includeUnsafe = $.getenv("include_unsafe") === "1" ? "--unsafe" : "";
 let resultsToFetch = parseInt($.getenv("inline_results_to_fetch")) || 5;
 if (resultsToFetch < 1) resultsToFetch = 1;
 else if (resultsToFetch > 25) resultsToFetch = 25; // maximum supported by `ddgr`
+
+const minimumQueryLength = parseInt($.getenv("minimum_query_length")) || 3;
+if (minimumQueryLength < 0) resultsToFetch = 0;
+else if (minimumQueryLength > 10) resultsToFetch = 10; // prevent accidental high values
+
+const includeUnsafe = $.getenv("include_unsafe") === "1" ? "--unsafe" : "";
 const ignoreAlfredKeywordsEnabled = $.getenv("ignore_alfred_keywords") === "1";
+const multiSelectIcon = $.getenv("multi_select_icon") || "🔳";
 
 // https://duckduckgo.com/duckduckgo-help-pages/settings/params/
 const searchRegion = $.getenv("region") === "none" ? "" : "--reg=" + $.getenv("region");
-
-const multiSelectIcon = "🔳";
 
 //──────────────────────────────────────────────────────────────────────────────
 
@@ -81,8 +85,9 @@ function refreshKeywordCache(cachePath) {
 	const timelogStart = +new Date();
 
 	const keywords = app
-		// $alfred_workflow_uid is identical for this workflow's pwd, which is excluded
-		// from the results, since this workflows keywords do not need to be removed
+		// $alfred_workflow_uid is identical with this workflow's foldername, which
+		// is excluded from the results, since this workflows keywords do not need
+		// to be removed
 		.doShellScript(
 			'grep -A1 "<key>keyword" ../**/info.plist | grep "<string>" | grep -v "$alfred_workflow_uid" || true',
 		)
@@ -96,8 +101,8 @@ function refreshKeywordCache(cachePath) {
 			if (value.startsWith("{var:")) {
 				const varName = value.split("{var:")[1].split("}")[0];
 				const workflowPath = line.split("/info.plist")[0];
-				// CASE 1a) user-set keywords
-				// (`plutil` will fail, since the value is not saved in prefs.plist)
+				// CASE 1a: user-set keywords
+				// (wrapped in try, since `plutil` will fail, as the value isn't saved in prefs.plist)
 				try {
 					// `..` is already the Alfred preferences directory, so no need to `cd` there
 					const userKeyword = app.doShellScript(
@@ -214,8 +219,14 @@ function run(argv) {
 		});
 	}
 
-	// GUARD CLAUSE 1: query is URL
-	if (query.match(/^\w+:/)) return;
+	// GUARD CLAUSE 1: query is URL or too short
+	if (query.match(/^\w+:/)) {
+		console.log("Ignored (URL)");
+		return;
+	} else if (query.length < minimumQueryLength) {
+		console.log("Ignored (Min Query Length)");
+		return;
+	}
 
 	// GUARD CLAUSE 2: first word of query is Alfred keyword
 	// (guard clause is ignored when doing fallback search or multi-select,
@@ -226,7 +237,7 @@ function run(argv) {
 		const alfredKeywords = JSON.parse(readFile(keywordCachePath));
 		const queryFirstWord = query.split(" ")[0];
 		if (alfredKeywords.includes(queryFirstWord)) {
-			console.log("Ignored due to Alfred keyword: " + queryFirstWord);
+			console.log(`Ignored (Alfred keyword: ${queryFirstWord})`);
 			return;
 		}
 	}
@@ -236,7 +247,7 @@ function run(argv) {
 	const oldQuery = $.NSProcessInfo.processInfo.environment.objectForKey("oldQuery").js;
 	const oldResults = $.NSProcessInfo.processInfo.environment.objectForKey("oldResults").js || "[]";
 
-	const querySearchUrl = $.getenv("search_site") + encodeURIComponent(query)
+	const querySearchUrl = $.getenv("search_site") + encodeURIComponent(query);
 	/** @type AlfredItem */
 	const searchForQuery = {
 		title: `"${query}"`,
@@ -342,9 +353,10 @@ function run(argv) {
 	// logging
 	const durationTotalSecs = (+new Date() - timelogStart) / 1000;
 	let log = `${durationTotalSecs}s, "${query}"`;
-	if (mode === "fallback" || mode === "multi-select") log += ` (${mode})`;
-	if (mode === "rerun") log = "__" + log; // indented to make it easier to read
-	else log = "Total: " + log;
+	if (mode === "default") log = "Total: " + log;
+	// indented to make it easier to read (using `__`, since Alfred removes leading whitespace)
+	else if (mode === "rerun") log = "__" + log;
+	else log += ` (${mode})`;
 	console.log(log);
 
 	return alfredInput;
