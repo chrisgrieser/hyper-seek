@@ -25,10 +25,11 @@
 - Add link to selected text: Turns selected text into a Markdown link. 
 
 ## Installation
-[➡️ Download the latest release of the workflow.](https://github.com/chrisgrieser/hyper-seek/releases/latest)
+1. [➡️ Download the latest release of the workflow.](https://github.com/chrisgrieser/hyper-seek/releases/latest)
+2. Add this workflow as [fallback search](https://www.alfredapp.com/help/features/default-results/fallback-searches/).
+
 > __Note__  
 > An earlier version of this workflow required `ddgr`. However, `ddgr` is not required anymore in the current version.
-
 
 __Auto-Update__  
 Due to the nature of this workflow, it is not going to be submitted to the Alfred Gallery. Therefore, the workflow includes its own auto-update function, which checks every day for a new update.
@@ -36,14 +37,15 @@ Due to the nature of this workflow, it is not going to be submitted to the Alfre
 ## Usage
 
 ### Inline results
-You do not need to use a keyword. Typing anything in Alfred shows inline search results.
+Typing anything in Alfred shows inline search results. You do not need to use a keyword. 
 - <kbd>⏎</kbd>: Search for the query term, or open result.
 - <kbd>⌘</kbd><kbd>⏎</kbd>: Multi-Select: (de)select the URL. The next <kbd>⏎</kbd> opens the selected result as well as all URLs marked before. 
-- <kbd>⌥</kbd><kbd>⏎</kbd>: Copy the URL. 
+- <kbd>⌥</kbd><kbd>⏎</kbd>: Copy URL to clipboard. 
+- <kbd>⌥</kbd> (hold): Show full URL.
 - <kbd>⇧</kbd> (hold): Show preview text of search result. 
 
-> __Recommendations__  
-> Add this workflow as [fallback search](https://www.alfredapp.com/help/features/default-results/fallback-searches/). In the [Alfred Advanced Settings](https://www.alfredapp.com/help/advanced/), set <kbd>⌃</kbd><kbd>⏎</kbd> to `Action all visible results`. This allows you to open all search results at once. 
+> __Note__  
+> In the [Alfred Advanced Settings](https://www.alfredapp.com/help/advanced/), set <kbd>⌃</kbd><kbd>⏎</kbd> to `Action all visible results`. This allows you to open all search results at once. 
 
 ### Global search hotkey 
 Configure the [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) to be able to search for any selection. The resulting action depends on the type of text selected:
@@ -69,6 +71,7 @@ In my day job, I am a sociologist studying the social mechanisms underlying the 
 - [reddit](https://www.reddit.com/user/pseudometapseudo)
 - [Discord](https://discordapp.com/users/462774483044794368/)
 - [Academic Website](https://chris-grieser.de/)
+- [Mastodon](https://pkm.social/@pseudometa)
 - [Twitter](https://twitter.com/pseudo_meta)
 - [ResearchGate](https://www.researchgate.net/profile/Christopher-Grieser)
 - [LinkedIn](https://www.linkedin.com/in/christopher-grieser-ba693b17a/)

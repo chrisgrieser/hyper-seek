@@ -849,7 +849,8 @@ Search for the Power User. Inline Results, *without a keyword*. Multi-select res
 ## Inline results (without a keyword!)
 - &lt;kbd&gt;⏎&lt;/kbd&gt;: Search for the query term, or open result.
 - &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;⏎&lt;/kbd&gt;: Multi-Select: (de)select the URL. The next &lt;kbd&gt;⏎&lt;/kbd&gt; will open the selected result as well as all previously marked URLs. 
-- &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;⏎&lt;/kbd&gt;: Copy URL. 
+- &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;⏎&lt;/kbd&gt;: Copy URL to clipboard. 
+- &lt;kbd&gt;⌥&lt;/kbd&gt; (hold): Show full URL.
 - &lt;kbd&gt;⇧&lt;/kbd&gt; (hold): Show preview text of search result. 
 
 **Recommendations**
