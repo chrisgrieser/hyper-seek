@@ -997,7 +997,7 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<key>colorindex</key>
 			<integer>3</integer>
 			<key>xpos</key>
-			<real>1005</real>
+			<real>1000</real>
 			<key>ypos</key>
 			<real>135</real>
 		</dict>
@@ -1008,7 +1008,7 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<key>note</key>
 			<string>OneUpdater</string>
 			<key>xpos</key>
-			<real>780</real>
+			<real>760</real>
 			<key>ypos</key>
 			<real>320</real>
 		</dict>
@@ -1181,7 +1181,7 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 				<integer>3</integer>
 			</dict>
 			<key>description</key>
-			<string>Comma-separated list of more keywords to ignore. Use this if the "Ignore Alfred Keywords" is not fine-grained enough for you, or if you want to ignore additional keywords.</string>
+			<string>Comma-separated list of more keywords to ignore. Use this if the "Ignore Alfred Keywords" setting is not fine-grained enough, or to ignore additional keywords.</string>
 			<key>label</key>
 			<string>Ignore extra words</string>
 			<key>type</key>
@@ -1287,6 +1287,25 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<string>popupbutton</string>
 			<key>variable</key>
 			<string>region</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>use</string>
+			</dict>
+			<key>description</key>
+			<string>Download favicons for websites. Does not work for every website and can double the loading time. (But will get slightly quicker when a lot of favicons have been cached.)</string>
+			<key>label</key>
+			<string>Favicons</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>use_favicons</string>
 		</dict>
 		<dict>
 			<key>config</key>
