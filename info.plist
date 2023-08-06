@@ -901,7 +901,7 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<key>note</key>
 			<string>save URL for multi-select</string>
 			<key>xpos</key>
-			<real>605</real>
+			<real>560</real>
 			<key>ypos</key>
 			<real>470</real>
 		</dict>
@@ -932,7 +932,7 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<key>note</key>
 			<string>select next result</string>
 			<key>xpos</key>
-			<real>605</real>
+			<real>560</real>
 			<key>ypos</key>
 			<real>615</real>
 		</dict>
@@ -1026,7 +1026,7 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<key>colorindex</key>
 			<integer>5</integer>
 			<key>xpos</key>
-			<real>545</real>
+			<real>500</real>
 			<key>ypos</key>
 			<real>645</real>
 		</dict>
@@ -1077,7 +1077,7 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<key>colorindex</key>
 			<integer>5</integer>
 			<key>xpos</key>
-			<real>470</real>
+			<real>425</real>
 			<key>ypos</key>
 			<real>575</real>
 		</dict>
@@ -1181,7 +1181,7 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 				<integer>3</integer>
 			</dict>
 			<key>description</key>
-			<string>comma-separated list of more keywords to ignore. Use this if the "Ignore Alfred Keywords" is not fine-grained enough for you, or if you want to ignore additional keywords.</string>
+			<string>Comma-separated list of more keywords to ignore. Use this if the "Ignore Alfred Keywords" is not fine-grained enough for you, or if you want to ignore additional keywords.</string>
 			<key>label</key>
 			<string>Ignore extra words</string>
 			<key>type</key>
