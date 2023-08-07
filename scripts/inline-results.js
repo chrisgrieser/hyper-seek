@@ -163,29 +163,36 @@ function refreshKeywordCache(cachePath) {
 	console.log(`Rebuilt keyword cache (${uniqueKeywords.length} keywords) in ${durationTotalSecs}s`);
 }
 
+const fileExists = (/** @type {string} */ filePath) => Application("Finder").exists(Path(filePath));
+
 /**
  * @param {string} topDomain where to get the favicon from
- * @return {string} filepath to cached favicon, empty string if not found
+ * @param {boolean} noNeedToBuffer
  */
-function getFavicon(topDomain) {
-	const fileExists = (/** @type {string} */ filePath) => Application("Finder").exists(Path(filePath));
-	const imageUrl = `https://${topDomain}/apple-touch-icon.png`;
-	const targetFile = `${$.getenv("alfred_workflow_cache")}/${topDomain}.png`;
+function getFavicon(topDomain, noNeedToBuffer) {
+	const durationLogStart = +new Date();
+
+	let targetFile = `${$.getenv("alfred_workflow_cache")}/${topDomain}.png`;
 	const useFaviconSetting = $.getenv("use_favicons") === "1";
 
-	// if user temporarily enabled the setting, use already downloaded favicons
-	if (fileExists(targetFile)) return targetFile;
-	if (!useFaviconSetting) return "";
-
-	// Normally, `curl` does exit 0 even when the website reports 404. without `curl
-	// --fail`, it will exit non-zero instead. However, errors make
-	// `doShellScript` fail, so we need to use `try/catch`
-	try {
-		app.doShellScript(`curl --location --fail "${imageUrl}" --output "${targetFile}"`);
-		return targetFile;
-	} catch (_error) {
-		return ""; // = not found -> use default icon
+	if (!fileExists(targetFile)) {
+		if (useFaviconSetting && !noNeedToBuffer) {
+			// Normally, `curl` does exit 0 even when the website reports 404.
+			// With `curl --fail`, it will exit non-zero instead. However,
+			// errors make `doShellScript` fail, so we need to use `try/catch`
+			try {
+				const imageUrl = `https://${topDomain}/apple-touch-icon.png`;
+				app.doShellScript(`curl --location --fail "${imageUrl}" --output "${targetFile}"`);
+			} catch (_error) {
+				targetFile = ""; // = not found -> use default icon
+			}
+		} else {
+			targetFile = "";
+		}
 	}
+
+	const durationMs = +new Date() - durationLogStart;
+	return { iconPath: targetFile, faviconMs: durationMs };
 }
 
 function ensureCacheFolder() {
@@ -203,6 +210,30 @@ function ensureCacheFolder() {
 	}
 }
 
+/**
+ * @param {string} bufferPath
+ * @param {string} instantAnswer
+ */
+function writeInstantAnswer(bufferPath, instantAnswer) {
+	const [, infoText, source] = instantAnswer.match(/(.*)\s+More at (.*?)$/);
+	const answerAsHtml = `
+		<style>
+		:root { font-size: 2em }
+		cite { margin-left: 70% }
+		blockquote p {
+			padding: 1em;
+			background: #eee;
+			border-radius: 5px;
+		}
+		</style>
+		<blockquote>
+		<p>${infoText}</p>
+		<cite>– ${source}</cite>
+		</blockquote>
+	`;
+	writeToFile(bufferPath, answerAsHtml);
+}
+
 //──────────────────────────────────────────────────────────────────────────────
 //──────────────────────────────────────────────────────────────────────────────
 
@@ -210,6 +241,7 @@ function ensureCacheFolder() {
 // rome-ignore lint/correctness/noUnusedVariables: Alfred run
 function run(argv) {
 	const timelogStart = +new Date();
+	let favIconTotalMs = 0;
 
 	//──────────────────────────────────────────────────────────────────────────────
 	// CONFIG
@@ -218,9 +250,9 @@ function run(argv) {
 	if (resultsToFetch < 1) resultsToFetch = 1;
 	else if (resultsToFetch > 25) resultsToFetch = 25; // maximum supported by `ddgr`
 
-	const minimumQueryLength = parseInt($.getenv("minimum_query_length")) || 3;
-	if (minimumQueryLength < 0) resultsToFetch = 0;
-	else if (minimumQueryLength > 10) resultsToFetch = 10; // prevent accidental high values
+	let minQueryLength = parseInt($.getenv("minimum_query_length")) || 3;
+	if (minQueryLength < 0) minQueryLength = 0;
+	else if (minQueryLength > 10) minQueryLength = 10; // prevent accidental high values
 
 	const includeUnsafe = $.getenv("include_unsafe") === "1" ? "--unsafe" : "";
 	const ignoreAlfredKeywordsEnabled = $.getenv("ignore_alfred_keywords") === "1";
@@ -246,7 +278,7 @@ function run(argv) {
 	if (query.match(/^\w+:/) && !neverIgnore) {
 		console.log("Ignored (URL)");
 		return;
-	} else if (query.length < minimumQueryLength && !neverIgnore) {
+	} else if (query.length < minQueryLength && !neverIgnore) {
 		console.log("Ignored (Min Query Length)");
 		return;
 	}
@@ -309,7 +341,6 @@ function run(argv) {
 	// PERF cache `ddgr` response so that re-opening Alfred or using multi-select
 	// does not re-fetch results
 	const responseCachePath = $.getenv("alfred_workflow_cache") + "/reponseCache.json";
-	/** @type{ddgrResponse} */
 	const responseCache = JSON.parse(readFile(responseCachePath) || "{}");
 	/** @type{ddgrResponse} */
 	let response;
@@ -333,12 +364,12 @@ function run(argv) {
 		writeToFile(responseCachePath, JSON.stringify(response));
 	}
 
-	// INSTANT ANSWER
-	if (response.instant_answer) searchForQuery.subtitle = response.instant_answer;
-
 	// determine multi-select items
 	const multiSelectBufferPath = $.getenv("alfred_workflow_cache") + "/multiSelectBuffer.txt";
 	const multiSelectUrls = readFile(multiSelectBufferPath).split("\n") || [];
+
+	// PERF
+	const noNeedToBuffer = mode === "rerun" || mode === "multi-select";
 
 	// RESULTS
 	/** @type AlfredItem[] */
@@ -346,7 +377,11 @@ function run(argv) {
 		const isSelected = multiSelectUrls.includes(item.url);
 		const icon = isSelected ? multiSelectIcon + " " : "";
 		const topDomain = item.url.split("/")[2];
-		const iconPath = getFavicon(topDomain) || "icons/1.png";
+
+		let { iconPath, faviconMs } = getFavicon(topDomain, noNeedToBuffer);
+		favIconTotalMs += faviconMs;
+		if (!iconPath) iconPath = "icons/fallback_for_no_favicon.png";
+
 		return {
 			title: icon + item.title,
 			subtitle: topDomain,
@@ -364,6 +399,16 @@ function run(argv) {
 			},
 		};
 	});
+
+	// INSTANT ANSWER: searchForQuery
+	if (response.instant_answer) {
+		searchForQuery.subtitle = "ℹ️ " + response.instant_answer;
+
+		// buffer instant answer for quicklook
+		const instantAnswerBuffer = $.getenv("alfred_workflow_cache") + "/instantAnswerBuffer.html";
+		if (!noNeedToBuffer) writeInstantAnswer(instantAnswerBuffer, response.instant_answer);
+		searchForQuery.quicklookurl = instantAnswerBuffer;
+	}
 
 	// MULTI-SLECT: searchForQuery
 	if (multiSelectUrls.includes(querySearchUrl)) {
@@ -388,13 +433,20 @@ function run(argv) {
 		items: [searchForQuery].concat(newResults),
 	});
 
-	// logging
+	// LOGGING
 	const durationTotalSecs = (+new Date() - timelogStart) / 1000;
-	let log = `${durationTotalSecs}s, "${query}"`;
-	if (mode === "default") log = "Total: " + log;
-	// indented to make it easier to read (using `__`, since Alfred removes leading whitespace)
-	else if (mode === "rerun") log = "__" + log;
-	else log += ` (${mode})`;
+	let log;
+	let time = `${durationTotalSecs}s`;
+	const useFaviconSetting = $.getenv("use_favicons") === "1";
+	if (useFaviconSetting && !noNeedToBuffer) time += `, favicons: ${favIconTotalMs / 1000}s`;
+	if (mode === "default") {
+		log = `Total: ${time}, "${query}"`;
+	} else if (mode === "rerun") {
+		log = "____" + time; // indented to make it easier to read
+	} else {
+		log = `Total: ${time}, "${query}" (${mode})`;
+	}
+
 	console.log(log);
 
 	return alfredInput;

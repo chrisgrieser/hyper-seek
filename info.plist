@@ -857,6 +857,7 @@ Search for the Power User. Inline Results, *without a keyword*. Multi-select res
 - &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;⏎&lt;/kbd&gt;: Copy URL to clipboard. 
 - &lt;kbd&gt;⌥&lt;/kbd&gt; (hold): Show full URL.
 - &lt;kbd&gt;⇧&lt;/kbd&gt; (hold): Show preview text of search result. 
+- &lt;kbd&gt;⇧&lt;/kbd&gt; or &lt;kbd&gt;⌘Y&lt;/kbd&gt; (on query with): Quick Look of the full instant answer.
 
 Use the keyword `today` to show a log of today's searches.
 
@@ -1299,7 +1300,7 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 				<string>use</string>
 			</dict>
 			<key>description</key>
-			<string>Download favicons for websites. Does not work for every website and can double the loading time. (But will get slightly quicker when a lot of favicons have been cached.)</string>
+			<string>Download favicons for websites. Does not work for every website and noticably increases loading time. Should not be combined with a high number of inline results. (However, performance will get better once a lot of favicons have been cached.)</string>
 			<key>label</key>
 			<string>Favicons</string>
 			<key>type</key>
