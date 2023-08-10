@@ -86,7 +86,7 @@ function refreshKeywordCache(cachePath) {
 					const userKeyword = app.doShellScript(
 						`plutil -extract "${varName}" raw -o - "${workflowPath}/prefs.plist"`,
 					);
-					keywords.push(userKeyword);
+					keywords.push(userKeyword.toLowerCase());
 				} catch (_error) {
 					// CASE 1b: keywords where user kept the default value
 					try {
@@ -98,7 +98,7 @@ function refreshKeywordCache(cachePath) {
 						const defaultValue = workflowConfig.find(
 							(/** @type {{ variable: string; }} */ option) => option.variable === varName,
 						).config.default;
-						keywords.push(defaultValue);
+						keywords.push(defaultValue.tolowerCase());
 					} catch (_error) {}
 				}
 			}
@@ -171,7 +171,7 @@ const fileExists = (/** @type {string} */ filePath) => Application("Finder").exi
  */
 function getFavicon(topDomain, noNeedToBuffer) {
 	const durationLogStart = +new Date();
-
+   
 	let targetFile = `${$.getenv("alfred_workflow_cache")}/${topDomain}.ico`;
 	const useFaviconSetting = $.getenv("use_favicons") === "1";
 
