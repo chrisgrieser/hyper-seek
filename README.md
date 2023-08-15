@@ -28,7 +28,7 @@
 1. [➡️ Download the latest release of the workflow.](https://github.com/chrisgrieser/hyper-seek/releases/latest)
 2. Add this workflow as [fallback search](https://www.alfredapp.com/help/features/default-results/fallback-searches/).
 
-> __Note__  
+> [!NOTE]
 > An earlier version of this workflow required `ddgr`. However, `ddgr` is not required anymore in the current version.
 
 __Auto-Update__  
