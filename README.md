@@ -44,7 +44,7 @@ Typing anything in Alfred shows inline search results. You do not need to use a 
 - <kbd>⌥</kbd> (hold): Show full URL.
 - <kbd>⇧</kbd> (hold): Show preview text of search result. 
 
-> __Note__  
+> [!NOTE]  
 > In the [Alfred Advanced Settings](https://www.alfredapp.com/help/advanced/), set <kbd>⌃</kbd><kbd>⏎</kbd> to `Action all visible results`. This allows you to open all search results at once. 
 
 ### Global search hotkey 
