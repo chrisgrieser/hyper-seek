@@ -24,23 +24,23 @@ if [[ -z "$SEL" ]]; then
 fi
 
 # clean up
-SEL=$(echo -n "$SEL" | xargs) # trims whitespace
-SEL="${SEL/#\~/$HOME}"        # resolve ~
+SEL=$(echo -n "$SEL" | sed -e 's/^ *//' -e 's/ *$//') # trims whitespace
+SEL="${SEL/#\~/$HOME}"                                # resolve ~
 
 # openers
-if [[ -f "$SEL" ]]; then
+if [[ -f "$SEL" ]]; then # file
 	open -R "$SEL"
-elif [[ -d "$SEL" ]]; then
+elif [[ -d "$SEL" || "$SEL" =~ ^http.* ]]; then # url or directory
 	open "$SEL"
-elif [[ "$SEL" =~ ^http.* ]]; then
-	open "$SEL"
-elif [[ "$SEL" =~ "@" ]]; then
+elif [[ "$SEL" =~ "@" ]]; then # mail
 	open "mailto:$SEL"
 elif [[ -n "$SEL" ]]; then
+	SEL=${SEL/\'/\\\'}
 	URL_ENCODED_SEL=$(osascript -l JavaScript -e "encodeURIComponent('$SEL')")
 	# shellcheck disable=2154
 	URL_2="$search_site$URL_ENCODED_SEL"
-	URL_1="https://duckduckgo.com/?q=$URL_ENCODED_SEL+!ducky"
+	# shellcheck disable=2154
+	URL_1="https://duckduckgo.com/?q=$URL_ENCODED_SEL+!ducky&kl=$region"
 
 	#────────────────────────────────────────────────────────────────────────────
 	# LOGGING
