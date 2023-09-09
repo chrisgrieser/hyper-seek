@@ -38,7 +38,6 @@ Due to the nature of this workflow, it is not going to be submitted to the Alfre
 ### Inline results
 Typing anything in Alfred shows inline search results. You do not need to use a keyword. 
 - <kbd>⏎</kbd>: Search for the query term, or open result.
-- <kbd>⌘</kbd><kbd>⏎</kbd>: Multi-Select: (de)select the URL. The next <kbd>⏎</kbd> opens the selected result as well as all URLs marked before. 
 - <kbd>⌥</kbd><kbd>⏎</kbd>: Copy URL to clipboard. 
 - <kbd>⌥</kbd> (hold): Show full URL.
 - <kbd>⇧</kbd> (hold): Show preview text of search result. 
