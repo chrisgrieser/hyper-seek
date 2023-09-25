@@ -136,7 +136,7 @@ function refreshKeywordCache(cachePath) {
 	if (userSearches) {
 		for (const uuid in Object.keys(userSearches)) {
 			const searchObj = userSearches[uuid];
-			if (searchObj.enabled) userSearchKeywords.push(searchObj.keyword);
+			if (searchObj?.enabled) userSearchKeywords.push(searchObj.keyword);
 		}
 	}
 
@@ -365,14 +365,13 @@ function run(argv) {
 	} else {
 		// NOTE using a fork of ddgr which includes the instant_answer when using `--json`
 		// https://github.com/kometenstaub
-		// PERF `--noua` disables user agent & fetches faster (~100ms according to hyperfine)
 		// PERF the number of results fetched has basically no effect on the speed
 		// (less than 40ms difference between 1 and 25 results), so there is no use
 		// in restricting the number of results for performance. (Except for 25 being
 		// ddgr's maximum)
 		const escapedQuery = query.replaceAll('"', '\\"');
 		const ddgr = "python3 ./dependencies/ddgr.py";
-		const ddgrCmd = `${ddgr} --json --noua ${includeUnsafe} --num=${resultsToFetch} ${searchRegion} "${escapedQuery}"`;
+		const ddgrCmd = `${ddgr} --json ${includeUnsafe} --num=${resultsToFetch} ${searchRegion} "${escapedQuery}"`;
 		response = JSON.parse(app.doShellScript(ddgrCmd));
 		response.query = query;
 		writeToFile(responseCachePath, JSON.stringify(response));
