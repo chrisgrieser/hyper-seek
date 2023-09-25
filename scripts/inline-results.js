@@ -137,7 +137,7 @@ function refreshKeywordCache(cachePath) {
 		for (const uuid in Object.keys(userSearches)) {
 			const searchObj = userSearches[uuid];
 			if (searchObj.enabled) userSearchKeywords.push(searchObj.keyword);
-		}	
+		}
 	}
 
 	// CASE 7: Keywords from this workflow
@@ -257,6 +257,7 @@ function writeInstantAnswer(bufferPath, instantAnswer) {
 
 /** @type {AlfredRun} */
 // biome-ignore lint/correctness/noUnusedVariables: Alfred run
+// biome-ignore lint/nursery/noExcessiveComplexity: <explanation>
 function run(argv) {
 	const timelogStart = +new Date();
 	let favIconTotalMs = 0;
