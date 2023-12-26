@@ -666,7 +666,7 @@ Selection is…
 Turns selected text into a markdown link, with the URL of the first search result for that text as URL for the markdown link. This feature is essentially a simplified version of [Brett Terpstra's SearchLink](https://brettterpstra.com/projects/searchlink/). 
 
 ## Auto-Update
-Due to the nature of this workflow, it will not be submitted to the Alfred Gallery. Therefore, the workflow includes it's own auto-update function, which checks every day for a new update.
+Due to the nature of this workflow, it will not be submitted to the Alfred Gallery. Therefore, the workflow includes its own auto-update function, which checks every day for a new update.
 
 ---
 
@@ -807,7 +807,7 @@ Created by [Chris Grieser](https://chris-grieser.de/).</string>
 			<key>colorindex</key>
 			<integer>2</integer>
 			<key>xpos</key>
-			<real>400</real>
+			<real>405</real>
 			<key>ypos</key>
 			<real>480</real>
 		</dict>

@@ -371,7 +371,7 @@ function run(argv) {
 		// ddgr's maximum)
 		const escapedQuery = query.replaceAll('"', '\\"');
 		const ddgr = "python3 ./dependencies/ddgr.py";
-		const ddgrCmd = `${ddgr} --json ${includeUnsafe} --num=${resultsToFetch} ${searchRegion} "${escapedQuery}"`;
+		const ddgrCmd = `${ddgr} --noua --json ${includeUnsafe} --num=${resultsToFetch} ${searchRegion} "${escapedQuery}"`;
 		response = JSON.parse(app.doShellScript(ddgrCmd));
 		response.query = query;
 		writeToFile(responseCachePath, JSON.stringify(response));
@@ -430,6 +430,5 @@ function run(argv) {
 	}
 
 	console.log(log);
-
 	return alfredInput;
 }
